@@ -1,15 +1,11 @@
 package com.nouhoun.springboot.jwt.integration.repository;
 
+import java.util.List;
+import org.springframework.data.repository.CrudRepository;
 import com.nouhoun.springboot.jwt.integration.domain.User;
 
-import java.util.List;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.repository.CrudRepository;
-import org.springframework.data.repository.PagingAndSortingRepository;
-
 /**
- * Created by nydiarra on 06/05/17.
+ * Created by mshah on 02/19/20.
  */
 public interface UserRepository extends CrudRepository<User, Long> {
     User findByUsername(String username);

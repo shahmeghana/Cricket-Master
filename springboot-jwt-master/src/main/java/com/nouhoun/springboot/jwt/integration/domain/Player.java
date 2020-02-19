@@ -1,21 +1,26 @@
 package com.nouhoun.springboot.jwt.integration.domain;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
 
 /**
- * Created by nydiarra on 10/05/17.
+ * Created by mshah on 02/19/20.
  */
 @Entity
-@Table(name = "random_city")
-public class RandomCity {
+@Table(name = "player_rtab")
+public class Player {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id")
     private Long id;
 
     @Column(name = "name")
     private String name;
-
+    
     public Long getId() {
         return id;
     }
@@ -31,4 +36,6 @@ public class RandomCity {
     public void setName(String name) {
         this.name = name;
     }
+
 }
+

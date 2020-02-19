@@ -1,10 +1,16 @@
 package com.nouhoun.springboot.jwt.integration.domain;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import javax.persistence.*;
 
 /**
- * Created by nydiarra on 06/05/17.
+ * Created by mshah on 02/19/20.
  */
 @Entity
 @Table(name = "userinfo_rtab")
@@ -23,12 +29,7 @@ public class User {
 
     @Column(name = "name")
     private String name;
-
-    /**
-     * Roles are being eagerly loaded here because
-     * they are a fairly small collection of items for this example.
-     */
-    
+   
     public Long getId() {
         return id;
     }
