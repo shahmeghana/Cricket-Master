@@ -8,6 +8,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 /**
  * Created by mshah on 02/19/20.
@@ -32,17 +34,16 @@ public class TimeTable {
     @Column(name = "stadium")
     private String stadium;
     
-    @Column(name = "date")
-    private Date date;
-    
-    @Column(name = "datetime")
-    private Date dateTime;
+    private Date eventDate;
 
     @Column(name = "team1")
     private Long team1Id;
     
     @Column(name = "team2")
     private Long team2Id;
+    
+    @Column(name = "winnerid")
+    private Long winnerId;
 
     public Long getId() {
         return id;
@@ -84,22 +85,14 @@ public class TimeTable {
         this.stadium = stadium;
     }
 
-    public Date getDate() {
-        return date;
+    public Date getEventDate() {
+        return eventDate;
     }
 
-    public void setDate(Date date) {
-        this.date = date;
-    }
-    
-    public Date getDateTime() {
-        return dateTime;
+    public void setEventDate(Date eventDate) {
+        this.eventDate = eventDate;
     }
 
-    public void setDateTime(Date dateTime) {
-        this.dateTime = dateTime;
-    }
-    
     public Long getTeam1Id() {
         return team1Id;
     }
@@ -114,6 +107,14 @@ public class TimeTable {
 
     public void setTeam2Id(Long team2Id) {
         this.team2Id = team2Id;
+    }
+    
+    public Long getWinnerId() {
+        return winnerId;
+    }
+
+    public void setWinnerId(Long winnerId) {
+        this.winnerId = winnerId;
     }
 }
 

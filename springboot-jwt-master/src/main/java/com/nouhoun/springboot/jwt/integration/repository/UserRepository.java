@@ -9,6 +9,6 @@ import com.nouhoun.springboot.jwt.integration.domain.User;
  */
 public interface UserRepository extends CrudRepository<User, Long> {
     User findByUsername(String username);
-	
+    User findByPhone(String phone);
 	List<User> findAll();
 }
