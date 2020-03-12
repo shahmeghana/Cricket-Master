@@ -7,5 +7,5 @@ import com.nouhoun.springboot.jwt.integration.domain.SystemProperty;
  * Created by mshah on 02/19/20.
  */
 public interface SystemPropertyRepository extends CrudRepository<SystemProperty, Long> {
-    
+    String findValueByName(String name);
 }

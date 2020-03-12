@@ -1,8 +1,9 @@
 package com.nouhoun.springboot.jwt.integration.service;
 
+import java.util.Date;
 import java.util.List;
 
-import com.nouhoun.springboot.jwt.integration.domain.TimeTable;
+import com.nouhoun.springboot.jwt.integration.domain.Match;
 import com.nouhoun.springboot.jwt.integration.domain.User;
 import com.nouhoun.springboot.jwt.integration.domain.UserDetails;
 import com.nouhoun.springboot.jwt.integration.util.Output;
@@ -19,9 +20,9 @@ public interface MatchService {
     Output register(UserDetails user);
     Output updateUser(String username, String password, String name, String email, String phone);
     
-    List<TimeTable> getTimeTableForToday();
+    List<Match> getTimeTableForToday(Date date);
     
-    List<TimeTable> getTimeTableHistory();
+    List<Match> getTimeTableHistory(Date date);
     
-    List<TimeTable> getTimeTableUpcoming();
+    List<Match> getTimeTableUpcoming(Date date);
 }

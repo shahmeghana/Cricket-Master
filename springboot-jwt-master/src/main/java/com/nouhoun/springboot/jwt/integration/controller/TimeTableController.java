@@ -5,11 +5,13 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.nouhoun.springboot.jwt.integration.domain.Match;
 import com.nouhoun.springboot.jwt.integration.domain.TimeTable;
-import com.nouhoun.springboot.jwt.integration.repository.TimeTableRepository;
+import com.nouhoun.springboot.jwt.integration.service.MatchService;
 
 /**
  * Created by mshah on 02/19/20.
@@ -18,24 +20,24 @@ import com.nouhoun.springboot.jwt.integration.repository.TimeTableRepository;
 @RequestMapping("/timetables")
 public class TimeTableController {
     @Autowired
-    private TimeTableRepository timeTableRepository;
+    private MatchService service;
     
     @GetMapping
     @RequestMapping("/today")
-    public List<TimeTable> getTimeTableForToday(){
-    	return timeTableRepository.findByEventDate(new Date());
+    public List<Match> getTimeTableForToday(Date date){
+    	return service.getTimeTableForToday(date);
     }
     
     @GetMapping
     @RequestMapping("/history")
-    public List<TimeTable> getTimeTableHistory(){
-    	return timeTableRepository.findAllByEventDateBefore(new Date());
+    public List<Match> getTimeTableHistory(Date date){
+    	return service.getTimeTableHistory(date);
     }
     
-    @GetMapping
-    @RequestMapping("/upcoming")
-    public List<TimeTable> getTimeTableUpcoming(){
-    	return timeTableRepository.findAllByEventDateAfter(new Date());
+    
+    @PostMapping("/upcoming")
+    public List<Match> getTimeTableUpcoming(Date date){
+    	return service.getTimeTableUpcoming(date);
     }
     
 }

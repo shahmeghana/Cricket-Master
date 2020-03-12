@@ -29,6 +29,9 @@ public class TeamList {
     @Column(name = "tournamentid")
     private Long tournamentId;
     
+    @Column(name = "teamCode")
+    private String teamCode;
+    
     public Long getId() {
         return id;
     }
@@ -59,6 +62,14 @@ public class TeamList {
 
     public void setTournamentId(Long tournamentId) {
         this.tournamentId = tournamentId;
+    }
+    
+    public String getTeamCode() {
+        return teamCode;
+    }
+
+    public void setTeamCode(String teamCode) {
+        this.teamCode = teamCode;
     }
 }
 
