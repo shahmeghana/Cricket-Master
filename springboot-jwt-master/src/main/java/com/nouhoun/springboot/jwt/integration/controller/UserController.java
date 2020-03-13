@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.nouhoun.springboot.jwt.integration.domain.User;
 import com.nouhoun.springboot.jwt.integration.domain.UserDetails;
-import com.nouhoun.springboot.jwt.integration.service.MatchService;
+import com.nouhoun.springboot.jwt.integration.service.GenericService;
 import com.nouhoun.springboot.jwt.integration.util.Output;
 
 /**
@@ -22,7 +22,7 @@ import com.nouhoun.springboot.jwt.integration.util.Output;
 @RequestMapping("/users")
 public class UserController {
     @Autowired
-    private MatchService service;
+    private GenericService service;
     
     @GetMapping("/fetchAll")
     public List<User> getUsers(){
