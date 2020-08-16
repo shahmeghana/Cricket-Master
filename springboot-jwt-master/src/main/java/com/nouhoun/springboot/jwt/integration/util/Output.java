@@ -7,10 +7,10 @@ public class Output {
 	
 	private String responseCode;
 	private String message;
-	private Map<String, Object> data = new HashMap<>();
+	private Map<String, Object> results = new HashMap<>();
 	
 	public Output() {
-		this.responseCode = ResponseCode.ERROR;
+		this.responseCode = ResponseCode.ERROR.getCode();
 		this.message = "Something went wrong";
 	}
 	
@@ -18,8 +18,6 @@ public class Output {
 		return responseCode;
 	}
 	public void setResponseCode(String responseCode) {
-		if(responseCode.equals(ResponseCode.OK))
-			this.message = "OK";
 		this.responseCode = responseCode;
 	}
 	public String getMessage() {
@@ -29,20 +27,37 @@ public class Output {
 		this.message = message;
 	}
 
-	public Map<String, Object> getData() {
-		return data;
+	public Map<String, Object> getResults() {
+		return results;
 	}
 	
-	public void setData(Map<String, Object> data) {
-		this.data = data;
+	public void setResults(Map<String, Object> results) {
+		this.results = results;
 	}
 	
 	//add method
-	public void setData(String key, Object value) {
-		this.data.put(key, value);
+	public void setResults(String key, Object value) {
+		this.results.put(key, value);
 	}
 	@Override
 	public String toString() {
-		return "Output [responseCode=" + responseCode + ", message=" + message + ", data=" + data + "]";
+		return "Output [responseCode=" + responseCode + ", message=" + message + ", data=" + results + "]";
 	}	
+	
+	public enum ResponseCode
+	{
+		ERROR("0000"),
+		SUCCESS("0101");
+		
+		String code;
+		ResponseCode(String code)
+		{
+			this.code = code;
+		}
+		
+		public String getCode()
+		{
+			return this.code;
+		}
+	}
 }

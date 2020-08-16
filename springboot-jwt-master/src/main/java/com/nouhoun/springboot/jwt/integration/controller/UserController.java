@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.nouhoun.springboot.jwt.integration.domain.User;
 import com.nouhoun.springboot.jwt.integration.domain.UserDetails;
 import com.nouhoun.springboot.jwt.integration.service.GenericService;
 import com.nouhoun.springboot.jwt.integration.util.Output;
@@ -25,19 +24,13 @@ public class UserController {
     private GenericService service;
     
     @GetMapping("/fetchAll")
-    public List<User> getUsers(){
-    	return service.getUsers();
+    public List<UserDetails> getUsers(){
+    	return service.findAllUsers();
     }
        
     @PostMapping("/register")
     public ResponseEntity<?> registerUser(@RequestBody UserDetails user){
     	Output out = service.register(user);
-    	return ResponseEntity.ok(out);
-    }
-    
-    @PostMapping("/update")
-    public ResponseEntity<?> updateUser(@RequestBody User user){
-    	Output out = service.updateUser(user.getUsername(), user.getPassword(), user.getName(), user.getEmail(), user.getPhone());
     	return ResponseEntity.ok(out);
     }
 
