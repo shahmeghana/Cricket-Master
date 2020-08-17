@@ -1,143 +1,108 @@
 package com.nouhoun.springboot.jwt.integration.domain;
 
-import java.util.HashMap;
-import java.util.Map;
-
+import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import javax.persistence.Table;
 
-import com.fasterxml.jackson.annotation.JsonAnyGetter;
-import com.fasterxml.jackson.annotation.JsonAnySetter;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-
-@JsonInclude(JsonInclude.Include.NON_NULL)
-@JsonPropertyOrder({
-	"displayName",
-	"email",
-	"emailVerified",
-	"isAnonymous",
-	"phoneNumber",
-	"photoURL",
-	"providerId",
-	"uid"
-})
-
 @Entity
-@Table(name = "userinfo_rtab")
+@Table(name = "userdetails_rtab")
 public class UserDetails {
 
-	@JsonProperty("displayName")
+	@Column(name = "displayName")
 	private String displayName;
-	@JsonProperty("email")
+	
+	@Column(name = "email")
 	private String email;
-	@JsonProperty("emailVerified")
+	
+	@Column(name = "emailVerified")
 	private Boolean emailVerified;
-	@JsonProperty("isAnonymous")
+	
+	@Column(name = "isAnonymous")
 	private Boolean isAnonymous;
-	@JsonProperty("phoneNumber")
-	private Object phoneNumber;
-	@JsonProperty("photoURL")
+	
+	@Column(name = "phoneNumber")
+	private String phoneNumber;
+	
+	@Column(name = "photoURL")
 	private String photoURL;
-	@JsonProperty("providerId")
+	
+	@Column(name = "providerId")
 	private String providerId;
-	@JsonProperty("uid")
+	
+	@Column(name = "uid")
 	private String uid;
-	@JsonIgnore
-	private Map<String, Object> additionalProperties = new HashMap<String, Object>();
-
-	@JsonProperty("displayName")
+	
+	@Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "id")
+    private Long id;
+	
 	public String getDisplayName() {
 		return displayName;
 	}
 
-	@JsonProperty("displayName")
 	public void setDisplayName(String displayName) {
 		this.displayName = displayName;
 	}
 
-	@JsonProperty("email")
 	public String getEmail() {
 		return email;
 	}
 
-	@JsonProperty("email")
 	public void setEmail(String email) {
 		this.email = email;
 	}
 
-	@JsonProperty("emailVerified")
 	public Boolean getEmailVerified() {
 		return emailVerified;
 	}
 
-	@JsonProperty("emailVerified")
 	public void setEmailVerified(Boolean emailVerified) {
 		this.emailVerified = emailVerified;
 	}
 
-	@JsonProperty("isAnonymous")
 	public Boolean getIsAnonymous() {
 		return isAnonymous;
 	}
 
-	@JsonProperty("isAnonymous")
 	public void setIsAnonymous(Boolean isAnonymous) {
 		this.isAnonymous = isAnonymous;
 	}
 
-	@JsonProperty("phoneNumber")
-	public Object getPhoneNumber() {
+	public String getPhoneNumber() {
 		return phoneNumber;
 	}
 
-	@JsonProperty("phoneNumber")
-	public void setPhoneNumber(Object phoneNumber) {
+	public void setPhoneNumber(String phoneNumber) {
 		this.phoneNumber = phoneNumber;
 	}
 
-	@JsonProperty("photoURL")
 	public String getPhotoURL() {
 		return photoURL;
 	}
 
-	@JsonProperty("photoURL")
 	public void setPhotoURL(String photoURL) {
 		this.photoURL = photoURL;
 	}
 
-	@JsonProperty("providerId")
 	public String getProviderId() {
 		return providerId;
 	}
 
-	@JsonProperty("providerId")
 	public void setProviderId(String providerId) {
 		this.providerId = providerId;
 	}
 
-	@JsonProperty("uid")
 	public String getUid() {
 		return uid;
 	}
 
-	@JsonProperty("uid")
 	public void setUid(String uid) {
 		this.uid = uid;
 	}
-
-	@JsonAnyGetter
-	public Map<String, Object> getAdditionalProperties() {
-		return this.additionalProperties;
-	}
-
-	@JsonAnySetter
-	public void setAdditionalProperty(String name, Object value) {
-		this.additionalProperties.put(name, value);
-	}
-
 }
 
 
