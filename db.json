@@ -1,7 +1,7 @@
 {
   "posts": [
     {
-      "url": "ngrok-url-here",
+      "url": "http://08253ba8728e.ngrok.io",
       "appVersion": "1.0.0",
       "apkUrl": "url-to-apk-file",
       "apiVersion": "1.0.0"
