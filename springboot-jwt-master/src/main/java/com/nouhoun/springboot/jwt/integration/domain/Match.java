@@ -25,9 +25,13 @@ public class Match {
     
     private String teamCode2;
     
+    private String winnerCode;
+    
     private String winner;
-
-    public Long getId() {
+    
+    private String comment;
+    
+	public Long getId() {
         return id;
     }
 
@@ -122,4 +126,21 @@ public class Match {
     public void setWinner(String winner) {
         this.winner = winner;
     }
+
+	public String getWinnerCode() {
+		return winnerCode;
+	}
+
+	public void setWinnerCode(String winnerCode) {
+		this.winnerCode = winnerCode;
+	}
+
+	public String getComment() {
+		return comment;
+	}
+
+	public void setComment(String comment) {
+		this.comment = comment;
+	}
+
 }

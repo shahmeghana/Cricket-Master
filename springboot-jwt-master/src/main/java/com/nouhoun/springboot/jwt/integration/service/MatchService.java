@@ -1,5 +1,7 @@
 package com.nouhoun.springboot.jwt.integration.service;
 
+import com.nouhoun.springboot.jwt.integration.domain.Match;
+import com.nouhoun.springboot.jwt.integration.domain.TimeTable;
 import com.nouhoun.springboot.jwt.integration.util.Output;
 
 /**
@@ -7,4 +9,6 @@ import com.nouhoun.springboot.jwt.integration.util.Output;
  */
 public interface MatchService {  
     Output getTimeTable();
+    
+    Match getMatch(TimeTable timeTable);
 }

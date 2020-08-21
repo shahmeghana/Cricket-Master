@@ -23,8 +23,8 @@ public class Bets {
 	@Column(name = "matchid")
     private Long matchId;
 	
-	@Column(name = "teamid")
-    private Long teamId;
+	@Column(name = "teamcode")
+    private String teamCode;
 	
     public Long getUserId() {
         return userId;
@@ -50,11 +50,11 @@ public class Bets {
         this.id = id;
     }
     
-    public Long getTeamId() {
-        return teamId;
+    public String getTeamCode() {
+        return teamCode;
     }
 
-    public void setTeamId(Long teamId) {
-        this.teamId = teamId;
+    public void setTeamCode(String teamCode) {
+        this.teamCode = teamCode;
     }
 }

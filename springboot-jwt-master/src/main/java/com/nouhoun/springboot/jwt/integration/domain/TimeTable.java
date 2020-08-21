@@ -8,8 +8,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 
 /**
  * Created by mshah on 02/19/20.
@@ -44,8 +42,11 @@ public class TimeTable {
     
     @Column(name = "winnerid")
     private Long winnerId;
+    
+    @Column(name = "comment")
+    private String comment;
 
-    public Long getId() {
+	public Long getId() {
         return id;
     }
 
@@ -116,5 +117,13 @@ public class TimeTable {
     public void setWinnerId(Long winnerId) {
         this.winnerId = winnerId;
     }
+
+    public String getComment() {
+		return comment;
+	}
+
+	public void setComment(String comment) {
+		this.comment = comment;
+	}
 }
 

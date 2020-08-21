@@ -9,6 +9,7 @@ import com.nouhoun.springboot.jwt.integration.domain.UserDetails;
 import com.nouhoun.springboot.jwt.integration.repository.UserRepository;
 import com.nouhoun.springboot.jwt.integration.service.GenericService;
 import com.nouhoun.springboot.jwt.integration.util.Output;
+import com.nouhoun.springboot.jwt.integration.util.Output.ResponseCode;
 /**
  * Created by mshah on 03/13/20.
  */
@@ -22,47 +23,42 @@ public class GenericServiceImpl implements GenericService {
         return (List<UserDetails>)userRepository.findAll();
     }
 
-
 	@Override
-	public UserDetails saveUser(UserDetails user) {
-		return userRepository.save(user);
+	public Output register(UserDetails userDetails) {
+		Output out = new Output();
+		try
+		{
+			UserDetails user = userRepository.findByUid(userDetails.getUid());
+			if(user != null)
+			{
+				user.setDisplayName(userDetails.getDisplayName());
+				user.setEmail(userDetails.getEmail());
+				user.setEmailVerified(userDetails.getEmailVerified());
+				user.setIsAnonymous(userDetails.getIsAnonymous());
+				user.setPhoneNumber(userDetails.getPhoneNumber());
+				user.setPhotoURL(userDetails.getPhotoURL());
+				user.setProviderId(userDetails.getProviderId());
+				userRepository.save(user);
+			}
+			else
+			{
+				userRepository.save(userDetails);
+			}
+		}
+		catch(Exception e) 
+		{ 
+			out.setMessage(e.getMessage()); 
+			return out;
+		}
+		
+		 out.setResponseCode(ResponseCode.SUCCESS.getCode());
+		 out.setMessage("Profile created successfully..."); 
+		 return out;
 	}
 
 	@Override
-	public Output register(UserDetails userDetails) {
-		return null;
-		/*
-		 * Output out = new Output();
-		 * 
-		 * if(userDetails.getUsername() == null) {
-		 * out.setMessage("Invalid username..."); return out; } User u =
-		 * findByUsername(userDetails.getUsername());
-		 * 
-		 * if(u != null) { out.setMessage("Username "+
-		 * userDetails.getUsername()+" already exist! Try another username."); return
-		 * out; }
-		 * 
-		 * if(userDetails.getPhone() == null) {
-		 * out.setMessage("Invalid phone number..."); return out; } u =
-		 * findByPhone(userDetails.getPhone());
-		 * 
-		 * if(u != null) { out.setMessage("User with number "+
-		 * userDetails.getPhone()+" already exist! Try another number."); return out; }
-		 * 
-		 * if(userDetails.getName() != null && userDetails.getEmail() != null &&
-		 * userDetails.getPassword() != null) { try { String encodedPassword =
-		 * passwordEncoder.encode(userDetails.getPassword());
-		 * 
-		 * User user = new User();
-		 * 
-		 * user.setName(userDetails.getName());
-		 * user.setUsername(userDetails.getUsername());
-		 * user.setPassword(encodedPassword); user.setEmail(userDetails.getEmail());
-		 * user.setPhone(userDetails.getPhone());
-		 * 
-		 * saveUser(user); out.setResponseCode(ResponseCode.SUCCESS.getCode());
-		 * out.setMessage("Profile created successfully..."); return out; }
-		 * catch(Exception e) { out.setMessage(e.getMessage()); return out; } }
-		 * out.setMessage("Enter valid user details..."); return out;
-		 */}
+	public UserDetails findByUid(String uid) {
+		UserDetails user = userRepository.findByUid(uid);
+		return user;
+	}
 }

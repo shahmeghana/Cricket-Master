@@ -6,13 +6,13 @@ import com.nouhoun.springboot.jwt.integration.domain.UserDetails;
 import com.nouhoun.springboot.jwt.integration.util.Output;
 
 /**
- * Created by nydiarra on 06/05/17.
+ * Created by mshah on 02/29/20.
  */
 public interface GenericService {
 
     List<UserDetails> findAllUsers();
         
-    UserDetails saveUser(UserDetails user);
-
     Output register(UserDetails user);    
+    
+    UserDetails findByUid(String uid);
 }

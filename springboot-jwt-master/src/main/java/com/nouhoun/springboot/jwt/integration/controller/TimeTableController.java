@@ -1,7 +1,5 @@
 package com.nouhoun.springboot.jwt.integration.controller;
 
-import java.util.Date;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,7 +19,7 @@ public class TimeTableController {
     private MatchService service;
     
     @GetMapping
-    public ResponseEntity<Output> getTimeTableForToday(Date date){
+    public ResponseEntity<Output> getTimeTableForToday(){
     	Output out = service.getTimeTable();
     	return ResponseEntity.ok(out);
     }    
