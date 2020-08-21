@@ -1,10 +1,10 @@
 {
-  "posts": [
-    {
-      "url": "http://08253ba8728e.ngrok.io",
-      "appVersion": "1.0.0",
-      "apkUrl": "url-to-apk-file",
-      "apiVersion": "1.0.0"
-    }
-  ]
+  "responseCode": "0101",
+  "message":"success",
+  "results": {
+    "apiVersion": "1.0.0", 
+    "apkUrl": "url-to-apk-file", 
+    "appVersion": "1.0.0", 
+    "url": "http://08253ba8728e.ngrok.io"
+  }
 }
