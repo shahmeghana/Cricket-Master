@@ -13,6 +13,7 @@ import com.nouhoun.springboot.jwt.integration.domain.Match;
 import com.nouhoun.springboot.jwt.integration.domain.TimeTable;
 import com.nouhoun.springboot.jwt.integration.domain.UserDetails;
 import com.nouhoun.springboot.jwt.integration.repository.BetsRepository;
+import com.nouhoun.springboot.jwt.integration.repository.SystemPropertyRepository;
 import com.nouhoun.springboot.jwt.integration.repository.TimeTableRepository;
 import com.nouhoun.springboot.jwt.integration.service.BetService;
 import com.nouhoun.springboot.jwt.integration.service.GenericService;
@@ -20,13 +21,19 @@ import com.nouhoun.springboot.jwt.integration.service.MatchService;
 import com.nouhoun.springboot.jwt.integration.util.BetAdapter;
 import com.nouhoun.springboot.jwt.integration.util.Output;
 import com.nouhoun.springboot.jwt.integration.util.Output.ResponseCode;
-
+import com.nouhoun.springboot.jwt.integration.util.Utility;
+/**
+ * Created by mshah on 20/08/20.
+ */
 @Service
 public class BetServiceImpl implements BetService {
+	private static final String BET_TIME = "BET_TIME";
 	@Autowired
 	private BetsRepository betsRepository;
 	@Autowired
     private TimeTableRepository timeTableRepository;
+	@Autowired
+    private SystemPropertyRepository systemPropertiesRepository;
 	@Autowired
 	GenericService genericService;
 	@Autowired
@@ -41,6 +48,16 @@ public class BetServiceImpl implements BetService {
 			UserDetails user = genericService.findByUid(uid);
 			if(user != null)
 			{
+				Optional<TimeTable> timeTable = timeTableRepository.findById(matchId);
+				if(timeTable.isPresent())
+				{
+					Match match = matchService.getMatch(timeTable.get());
+					int threshold = Integer.valueOf(systemPropertiesRepository.findValueByName(BET_TIME));
+					if(match.getEventDate().before(Utility.addCalenderMinutes(match.getEventDate(), -threshold)))
+					{
+						throw new Exception("Cannot modify bet for old or ongoing matches!");
+					}
+				}
 				Bets bet = betsRepository.findByUserIdAndMatchId(user.getId(), matchId);
 				if(bet != null)
 				{

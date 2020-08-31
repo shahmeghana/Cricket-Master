@@ -23,6 +23,9 @@ public class Friends {
 	@Column(name = "friendid")
     private Long friendId;
 	
+	@Column(name = "status")
+    private int status;
+	
     public Long getUserId() {
         return userId;
     }
@@ -39,7 +42,15 @@ public class Friends {
         this.friendId = friendId;
     }
     
-    public Long getId() {
+    public int getStatus() {
+		return status;
+	}
+
+	public void setStatus(int i) {
+		this.status = i;
+	}
+
+	public Long getId() {
         return id;
     }
 

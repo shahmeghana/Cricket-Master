@@ -19,7 +19,7 @@ public class TimeTableController {
     private MatchService service;
     
     @GetMapping
-    public ResponseEntity<Output> getTimeTableForToday(){
+    public ResponseEntity<Output> getTimeTable(){
     	Output out = service.getTimeTable();
     	return ResponseEntity.ok(out);
     }    

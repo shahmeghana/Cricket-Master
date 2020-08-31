@@ -38,6 +38,7 @@ public class GenericServiceImpl implements GenericService {
 				user.setPhoneNumber(userDetails.getPhoneNumber());
 				user.setPhotoURL(userDetails.getPhotoURL());
 				user.setProviderId(userDetails.getProviderId());
+				user.setToken(userDetails.getToken());
 				userRepository.save(user);
 			}
 			else
