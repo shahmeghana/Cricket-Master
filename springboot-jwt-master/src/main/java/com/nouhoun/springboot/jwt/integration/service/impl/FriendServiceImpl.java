@@ -26,7 +26,7 @@ public class FriendServiceImpl implements FriendService {
 	@Autowired
 	private UserRepository userRepository;
 	@Autowired
-	GenericService genericService;
+	private GenericService genericService;
 	
 	@Override
 	public Output followFriend(String uid, long id) {
@@ -92,23 +92,7 @@ public class FriendServiceImpl implements FriendService {
 		List<UserDetails> users = new ArrayList<UserDetails>();
 		try
 		{
-			UserDetails user = genericService.findByUid(uid);
-			if(user != null)
-			{ 
-				List<Friends> friends = friendsRepository.findByUserId(user.getId());
-				for(Friends friend : friends)
-				{
-					Optional<UserDetails> frnd = userRepository.findById(friend.getFriendId());
-					if(frnd.isPresent())
-					{
-						users.add(frnd.get());
-					}
-				}
-			}
-			else
-			{
-				throw new Exception("User not found!");
-			}
+			users.addAll(findFriends(uid));
 		}
 		catch(Exception e) 
 		{ 
@@ -120,6 +104,31 @@ public class FriendServiceImpl implements FriendService {
 		 out.setMessage("Fetched all friends successfully...");
 		 out.setResults("Friends",users);
 		 return out;
+	}
+
+	@Override
+	public List<UserDetails> findFriends(String uid) throws Exception {
+		UserDetails user = genericService.findByUid(uid);
+		List<UserDetails> users = new ArrayList<UserDetails>();
+
+		if(user != null)
+		{ 
+			List<Friends> friends = friendsRepository.findByUserId(user.getId());
+			for(Friends friend : friends)
+			{
+				Optional<UserDetails> frnd = userRepository.findById(friend.getFriendId());
+				if(frnd.isPresent())
+				{
+					users.add(frnd.get());
+				}
+			}
+		}
+		else
+		{
+			throw new Exception("User not found!");
+		}
+		
+		return users;
 	}
 
 }

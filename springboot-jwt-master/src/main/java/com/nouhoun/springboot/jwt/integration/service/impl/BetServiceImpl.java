@@ -1,7 +1,9 @@
 package com.nouhoun.springboot.jwt.integration.service.impl;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,9 +37,9 @@ public class BetServiceImpl implements BetService {
 	@Autowired
     private SystemPropertyRepository systemPropertiesRepository;
 	@Autowired
-	GenericService genericService;
+	private GenericService genericService;
 	@Autowired
-	MatchService matchService;
+	private MatchService matchService;
 	
 	@Override
 	public Output saveBet(String uid, Long matchId, String teamCode) {
@@ -52,7 +54,7 @@ public class BetServiceImpl implements BetService {
 				if(timeTable.isPresent())
 				{
 					Match match = matchService.getMatch(timeTable.get());
-					int threshold = Integer.valueOf(systemPropertiesRepository.findValueByName(BET_TIME));
+					int threshold = Integer.valueOf(systemPropertiesRepository.findByName(BET_TIME).getValue());
 					if(match.getEventDate().before(Utility.addCalenderMinutes(match.getEventDate(), -threshold)))
 					{
 						throw new Exception("Cannot modify bet for old or ongoing matches!");
@@ -98,18 +100,7 @@ public class BetServiceImpl implements BetService {
 			UserDetails user = genericService.findByUid(uid);
 			if(user != null)
 			{
-				List<Bets> allBets = betsRepository.findAllByUserId(user.getId());
-				for(Bets bet : allBets)
-				{
-					Optional<TimeTable> timeTable = timeTableRepository.findById(bet.getMatchId());
-					if(timeTable.isPresent())
-					{
-						Match match = matchService.getMatch(timeTable.get());
-						final BetAdapter convertor = new BetAdapter(bet);
-						final Bet punt = convertor.convertToBet(match);
-						bets.add(punt);
-					}
-				}
+				bets.addAll(convertsBets(user));
 			}
 			else
 			{
@@ -125,6 +116,76 @@ public class BetServiceImpl implements BetService {
 		 out.setResponseCode(ResponseCode.SUCCESS.getCode());
 		 out.setMessage("All bet fetched..."); 
 		 out.setResults("bets",bets);
+		 return out;
+	}
+
+	@Override
+	public List<Bet> convertsBets(UserDetails user) {
+		List<Bet> bets = new ArrayList<Bet>();
+		List<Bets> allBets = betsRepository.findAllByUserId(user.getId());
+
+		List<TimeTable> timeTables = timeTableRepository.findAll();
+		Map<Long, Match> matches = new HashMap<Long, Match>();
+		for(TimeTable timeTable : timeTables)
+		{
+			Match match = matchService.getMatch(timeTable);
+			matches.put(match.getId(),match);
+		}
+		for(Bets bet : allBets)
+		{
+			if(matches.get(bet.getMatchId()) != null)
+			{
+				Match match = matches.get(bet.getMatchId());
+				final BetAdapter convertor = new BetAdapter(bet);
+				final Bet punt = convertor.convertToBet(match);
+				bets.add(punt);
+			}
+		}
+		return bets;
+	}
+
+	@Override
+	public Output deleteBet(String uid, Long matchId) {
+		Output out =  new Output();
+
+		try
+		{
+			UserDetails user = genericService.findByUid(uid);
+			if(user != null)
+			{
+				Optional<TimeTable> timeTable = timeTableRepository.findById(matchId);
+				if(timeTable.isPresent())
+				{
+					Match match = matchService.getMatch(timeTable.get());
+					int threshold = Integer.valueOf(systemPropertiesRepository.findByName(BET_TIME).getValue());
+					if(match.getEventDate().before(Utility.addCalenderMinutes(match.getEventDate(), -threshold)))
+					{
+						throw new Exception("Cannot modify bet for old or ongoing matches!");
+					}
+				}
+				Bets bet = betsRepository.findByUserIdAndMatchId(user.getId(), matchId);
+				if(bet != null)
+				{
+					betsRepository.delete(bet);
+				}
+				else
+				{
+					throw new Exception("No Bet found!");
+				}
+			}
+			else
+			{
+				throw new Exception("User not found!");
+			}
+		}
+		catch(Exception e) 
+		{ 
+			out.setMessage(e.getMessage()); 
+			return out;
+		}
+		
+		 out.setResponseCode(ResponseCode.SUCCESS.getCode());
+		 out.setMessage("Bet deleted successfully..."); 
 		 return out;
 	}
 

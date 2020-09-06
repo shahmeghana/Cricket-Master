@@ -11,7 +11,7 @@ import javax.persistence.Table;
  * Created by mshah on 02/19/20.
  */
 @Entity
-@Table(name = "system.properties_rtab")
+@Table(name = "systemproperties_rtab")
 public class SystemProperty {
 	@Id
     @GeneratedValue(strategy = GenerationType.AUTO)

@@ -19,8 +19,22 @@ public class GenericServiceImpl implements GenericService {
     private UserRepository userRepository;
 
     @Override
-    public List<UserDetails> findAllUsers() {
-        return (List<UserDetails>)userRepository.findAll();
+    public Output findAllUsers() {
+    	Output out = new Output();
+    	try
+		{
+    		List<UserDetails> userDetails = (List<UserDetails>)userRepository.findAll();
+    		out.setResults("Users", userDetails);
+		}
+    	catch(Exception e)
+    	{
+			out.setMessage(e.getMessage()); 
+			return out;
+    	}
+    	
+    	out.setResponseCode(ResponseCode.SUCCESS.getCode());
+    	out.setMessage("Fetched all users successfully");
+        return out;
     }
 
 	@Override
@@ -62,4 +76,24 @@ public class GenericServiceImpl implements GenericService {
 		UserDetails user = userRepository.findByUid(uid);
 		return user;
 	}
+
+	@Override
+	public Output searchUser(String name) {
+    	Output out = new Output();
+    	try
+		{
+    		List<UserDetails> userDetails = userRepository.findByDisplayNameLike(name);
+    		out.setResults("Users", userDetails);
+		}
+    	catch(Exception e)
+    	{
+			out.setMessage(e.getMessage()); 
+			return out;
+    	}
+    	
+    	out.setResponseCode(ResponseCode.SUCCESS.getCode());
+    	out.setMessage("Found users successfully");
+        return out;
+    }
+
 }

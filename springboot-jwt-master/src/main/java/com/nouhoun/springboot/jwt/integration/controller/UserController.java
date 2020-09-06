@@ -1,11 +1,10 @@
 package com.nouhoun.springboot.jwt.integration.controller;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,8 +25,13 @@ public class UserController {
     private GenericService service;
     
     @GetMapping("/fetchAll")
-    public List<UserDetails> getUsers(){
-    	return service.findAllUsers();
+    public ResponseEntity<?> getUsers(){
+    	Output out = service.findAllUsers();
+    	if(out.getResponseCode() == ResponseCode.ERROR.getCode())
+    	{
+    		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(out);
+    	}
+    	return ResponseEntity.ok(out);
     }
        
     @PostMapping("/register")
@@ -40,4 +44,13 @@ public class UserController {
     	return ResponseEntity.ok(out);
     }
 
+    @GetMapping("/search/{name}")
+    public ResponseEntity<?> searchUsers(@PathVariable(value = "String") String name){
+    	Output out = service.searchUser(name);
+    	if(out.getResponseCode() == ResponseCode.ERROR.getCode())
+    	{
+    		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(out);
+    	}
+    	return ResponseEntity.ok(out);
+    }
 }

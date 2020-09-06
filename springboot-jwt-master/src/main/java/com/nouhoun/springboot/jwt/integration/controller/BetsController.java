@@ -21,7 +21,7 @@ public class BetsController {
    @Autowired
    BetService service;
    
-   @GetMapping("/getBets")
+   @GetMapping("/get")
    public ResponseEntity<Output> getBets(String uid){
 	   Output out = service.getBets(uid);
 	   if(out.getResponseCode() == ResponseCode.ERROR.getCode())
@@ -31,9 +31,19 @@ public class BetsController {
 	   return ResponseEntity.ok(out);
    }
    
-   @PostMapping("/saveBet")
+   @PostMapping("/save")
    public ResponseEntity<Output> saveBet(String uid, Long matchId, String teamCode){
 	   Output out = service.saveBet(uid, matchId, teamCode);
+	   if(out.getResponseCode() == ResponseCode.ERROR.getCode())
+	   {
+		   return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(out);
+	   }
+	   return ResponseEntity.ok(out);
+   }
+   
+   @PostMapping("/delete")
+   public ResponseEntity<Output> deleteBet(String uid, Long matchId){
+	   Output out = service.deleteBet(uid, matchId);
 	   if(out.getResponseCode() == ResponseCode.ERROR.getCode())
 	   {
 		   return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(out);

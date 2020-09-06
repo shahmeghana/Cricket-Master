@@ -14,4 +14,6 @@ public interface UserRepository extends CrudRepository<UserDetails, Long> {
 	UserDetails findByUid(String uid);
 	Optional<UserDetails> findById(Long id);
 	List<UserDetails> findAll();
+	
+	List<UserDetails> findByDisplayNameLike(String displayName);
 }
