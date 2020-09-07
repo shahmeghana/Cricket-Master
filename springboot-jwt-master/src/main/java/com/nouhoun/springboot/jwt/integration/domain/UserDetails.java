@@ -7,8 +7,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 @Entity
 @Table(name = "userdetails_rtab")
 public class UserDetails {
@@ -19,11 +17,9 @@ public class UserDetails {
 	@Column(name = "email")
 	private String email;
 	
-	@JsonIgnore
 	@Column(name = "emailVerified")
 	private Boolean emailVerified;
 	
-	@JsonIgnore
 	@Column(name = "isAnonymous")
 	private Boolean isAnonymous;
 	
@@ -33,15 +29,12 @@ public class UserDetails {
 	@Column(name = "photoURL")
 	private String photoURL;
 	
-	@JsonIgnore
 	@Column(name = "providerId")
 	private String providerId;
 	
-	@JsonIgnore
 	@Column(name = "uid")
 	private String uid;
 	
-	@JsonIgnore
 	@Column(name = "token")
 	private String token;
 	
