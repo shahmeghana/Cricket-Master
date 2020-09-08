@@ -4,10 +4,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.nouhoun.springboot.jwt.integration.domain.UserDetails;
@@ -44,8 +44,8 @@ public class UserController {
     	return ResponseEntity.ok(out);
     }
 
-    @GetMapping("/search/{name}")
-    public ResponseEntity<?> searchUsers(@PathVariable(value = "String") String name){
+    @GetMapping("/search")
+    public ResponseEntity<?> searchUsers(@RequestParam String name){
     	Output out = service.searchUser(name);
     	if(out.getResponseCode() == ResponseCode.ERROR.getCode())
     	{
