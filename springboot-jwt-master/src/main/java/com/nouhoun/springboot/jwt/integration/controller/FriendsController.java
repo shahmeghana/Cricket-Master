@@ -5,9 +5,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.nouhoun.springboot.jwt.integration.domain.Input;
 import com.nouhoun.springboot.jwt.integration.service.FriendService;
 import com.nouhoun.springboot.jwt.integration.util.Output;
 import com.nouhoun.springboot.jwt.integration.util.Output.ResponseCode;
@@ -22,7 +25,7 @@ public class FriendsController {
    FriendService service;
    
    @GetMapping("/get")
-   public ResponseEntity<Output> getFriends(String uid){
+   public ResponseEntity<Output> getFriends(@RequestParam String uid){
 	   Output out = service.getFriends(uid);
 	   if(out.getResponseCode() == ResponseCode.ERROR.getCode())
 	   {
@@ -32,7 +35,9 @@ public class FriendsController {
    }
    
    @PostMapping("/follow")
-   public ResponseEntity<Output> followFriends(String uid, long id){
+   public ResponseEntity<Output> followFriends(@RequestBody Input input){
+	   String uid = input.getUid();
+	   Long id = input.getId();
 	   Output out = service.followFriend(uid, id);
 	   if(out.getResponseCode() == ResponseCode.ERROR.getCode())
 	   {
@@ -42,7 +47,9 @@ public class FriendsController {
    }
    
    @PostMapping("/unfollow")
-   public ResponseEntity<Output> unfollowFriends(String uid, long id){
+   public ResponseEntity<Output> unfollowFriends(@RequestBody Input input){
+	   String uid = input.getUid();
+	   Long id = input.getId();
 	   Output out = service.unfollowFriend(uid, id);;
 	   if(out.getResponseCode() == ResponseCode.ERROR.getCode())
 	   {

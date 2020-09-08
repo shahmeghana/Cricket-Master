@@ -17,7 +17,7 @@ public class BetAdapter {
 		Bet punt = new Bet();
 		punt.setMatch(match);
 		punt.setBetTeamCode(bet.getTeamCode());
-		if(match.getWinner() != null && !match.getWinner().equals("DRAW"))
+		if(match.getWinner() != null)
 		{
 			if(match.getWinnerCode().equals(bet.getTeamCode()))
 			{

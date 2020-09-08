@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.nouhoun.springboot.jwt.integration.service.LeaderBoardService;
@@ -31,7 +32,7 @@ public class LeadersBoardController {
    }
    
    @GetMapping("/getFriends")
-   public ResponseEntity<Output> getFriendsLeaderBoard(String uid){
+   public ResponseEntity<Output> getFriendsLeaderBoard(@RequestParam String uid){
 	   Output out = service.getFriendsLeaderBoard(uid);
 	   if(out.getResponseCode() == ResponseCode.ERROR.getCode())
 	   {

@@ -43,7 +43,6 @@ public class MatchServiceImpl implements MatchService {
 		Output out =  new Output();
 
     	timeTables = timeTableRepository.findAll();
-    	
     	for(TimeTable timeTable : timeTables)
     	{
     		Match match = getMatch(timeTable);
