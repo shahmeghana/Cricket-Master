@@ -10,11 +10,12 @@ import org.springframework.stereotype.Service;
 
 import com.nouhoun.springboot.jwt.integration.domain.Bet;
 import com.nouhoun.springboot.jwt.integration.domain.Score;
+import com.nouhoun.springboot.jwt.integration.domain.User;
 import com.nouhoun.springboot.jwt.integration.domain.UserDetails;
 import com.nouhoun.springboot.jwt.integration.repository.SystemPropertyRepository;
 import com.nouhoun.springboot.jwt.integration.repository.UserRepository;
 import com.nouhoun.springboot.jwt.integration.service.BetService;
-import com.nouhoun.springboot.jwt.integration.service.FriendService;
+import com.nouhoun.springboot.jwt.integration.service.GenericService;
 import com.nouhoun.springboot.jwt.integration.service.LeaderBoardService;
 import com.nouhoun.springboot.jwt.integration.util.Output;
 import com.nouhoun.springboot.jwt.integration.util.Output.ResponseCode;
@@ -31,7 +32,7 @@ public class LeaderBoardServiceImpl implements LeaderBoardService {
 	@Autowired
 	private BetService betService;
 	@Autowired
-	private FriendService friendService;
+	private GenericService service;
 	
 	@Override
 	public Output getLeaderBoard() {
@@ -44,7 +45,8 @@ public class LeaderBoardServiceImpl implements LeaderBoardService {
     		List<UserDetails> userDetails = (List<UserDetails>)userRepository.findAll();
     		for(UserDetails user : userDetails)
     		{
-    			userScores.add(getScore(user));
+    			User usr = service.getUser(user);
+    			userScores.add(getScore(usr));
     		}
     		Collections.sort(userScores, scoreComparator());
     		
@@ -58,7 +60,7 @@ public class LeaderBoardServiceImpl implements LeaderBoardService {
     			scoreList.add(score);
     		}
     		
-    		out.setResults("LeadersBoard", scoreList);
+    		out.setResults("leadersBoard", scoreList);
 		}
     	catch(Exception e)
     	{
@@ -71,7 +73,7 @@ public class LeaderBoardServiceImpl implements LeaderBoardService {
         return out;
     }
 
-	private Score getScore(UserDetails user) {
+	private Score getScore(User user) {
 		List<Bet> bets = betService.convertsBets(user);
 		Long score = 0L;
 		for(Bet bet : bets)
@@ -116,8 +118,8 @@ public class LeaderBoardServiceImpl implements LeaderBoardService {
     	Long limit =  Long.valueOf(systemPropertiesRepository.findByName(LEADERSBOARD).getValue());
     	try
 		{
-    		List<UserDetails> userDetails = friendService.findFriends(uid);
-    		for(UserDetails user : userDetails)
+    		List<User> userDetails = service.findFriends(uid);
+    		for(User user : userDetails)
     		{
     			userScores.add(getScore(user));
     		}
@@ -133,7 +135,7 @@ public class LeaderBoardServiceImpl implements LeaderBoardService {
     			scoreList.add(score);
     		}
     		
-    		out.setResults("LeadersBoard", scoreList);
+    		out.setResults("leadersBoard", scoreList);
 		}
     	catch(Exception e)
     	{

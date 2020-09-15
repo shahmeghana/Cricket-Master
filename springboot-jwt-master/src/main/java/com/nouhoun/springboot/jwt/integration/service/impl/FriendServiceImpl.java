@@ -2,15 +2,14 @@ package com.nouhoun.springboot.jwt.integration.service.impl;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.nouhoun.springboot.jwt.integration.domain.Friends;
+import com.nouhoun.springboot.jwt.integration.domain.User;
 import com.nouhoun.springboot.jwt.integration.domain.UserDetails;
 import com.nouhoun.springboot.jwt.integration.repository.FriendsRepository;
-import com.nouhoun.springboot.jwt.integration.repository.UserRepository;
 import com.nouhoun.springboot.jwt.integration.service.FriendService;
 import com.nouhoun.springboot.jwt.integration.service.GenericService;
 import com.nouhoun.springboot.jwt.integration.util.Output;
@@ -24,8 +23,6 @@ public class FriendServiceImpl implements FriendService {
 	@Autowired
 	private FriendsRepository friendsRepository;
 	@Autowired
-	private UserRepository userRepository;
-	@Autowired
 	private GenericService genericService;
 	
 	@Override
@@ -36,10 +33,19 @@ public class FriendServiceImpl implements FriendService {
 			UserDetails user = genericService.findByUid(uid);
 			if(user != null)
 			{
-				Friends friend = new Friends();
-				friend.setUserId(user.getId());
-				friend.setFriendId(id);
-				friend.setStatus(1);
+				Friends friend = friendsRepository.findByUserIdAndFriendId(user.getId(), id);
+				if(friend.getId() != null)
+				{
+					friend.setStatus(1);
+				}
+				else
+				{
+					friend = new Friends();
+					friend.setUserId(user.getId());
+					friend.setFriendId(id);
+					friend.setStatus(1);
+				}
+
 				friendsRepository.save(friend);
 			}
 			else
@@ -89,10 +95,10 @@ public class FriendServiceImpl implements FriendService {
 	@Override
 	public Output getFriends(String uid) {
 		Output out =  new Output();
-		List<UserDetails> users = new ArrayList<UserDetails>();
+		List<User> users = new ArrayList<User>();
 		try
 		{
-			users.addAll(findFriends(uid));
+			users.addAll(genericService.findFriends(uid));
 		}
 		catch(Exception e) 
 		{ 
@@ -102,33 +108,8 @@ public class FriendServiceImpl implements FriendService {
 		
 		 out.setResponseCode(ResponseCode.SUCCESS.getCode());
 		 out.setMessage("Fetched all friends successfully...");
-		 out.setResults("Friends",users);
+		 out.setResults("friends",users);
 		 return out;
-	}
-
-	@Override
-	public List<UserDetails> findFriends(String uid) throws Exception {
-		UserDetails user = genericService.findByUid(uid);
-		List<UserDetails> users = new ArrayList<UserDetails>();
-
-		if(user != null)
-		{ 
-			List<Friends> friends = friendsRepository.findByUserId(user.getId());
-			for(Friends friend : friends)
-			{
-				Optional<UserDetails> frnd = userRepository.findById(friend.getFriendId());
-				if(frnd.isPresent())
-				{
-					users.add(frnd.get());
-				}
-			}
-		}
-		else
-		{
-			throw new Exception("User not found!");
-		}
-		
-		return users;
 	}
 
 }

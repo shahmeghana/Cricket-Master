@@ -1,8 +1,5 @@
 package com.nouhoun.springboot.jwt.integration.service;
 
-import java.util.List;
-
-import com.nouhoun.springboot.jwt.integration.domain.UserDetails;
 import com.nouhoun.springboot.jwt.integration.util.Output;
 
 /**
@@ -14,6 +11,4 @@ public interface FriendService {
 	Output unfollowFriend(String uid, long id);
 	
 	Output getFriends(String uid);
-	
-	List<UserDetails> findFriends(String uid) throws Exception;
 }

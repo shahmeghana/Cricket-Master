@@ -9,6 +9,8 @@ public class Input {
 	private String teamCode;
 	
 	private Long id;
+	
+	private String name;
 
 	public String getUid() {
 		return uid;
@@ -40,6 +42,14 @@ public class Input {
 
 	public void setId(Long id) {
 		this.id = id;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
 	}
 	
 }

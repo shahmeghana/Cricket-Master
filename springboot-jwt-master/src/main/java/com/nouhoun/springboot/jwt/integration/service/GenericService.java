@@ -1,5 +1,8 @@
 package com.nouhoun.springboot.jwt.integration.service;
 
+import java.util.List;
+
+import com.nouhoun.springboot.jwt.integration.domain.User;
 import com.nouhoun.springboot.jwt.integration.domain.UserDetails;
 import com.nouhoun.springboot.jwt.integration.util.Output;
 
@@ -14,6 +17,10 @@ public interface GenericService {
     
     UserDetails findByUid(String uid);
     
-    Output searchUser(String name);
+    Output searchUser(String uid, String name);
+    
+	List<User> findFriends(String uid) throws Exception;
+	
+	User getUser(UserDetails user);
     
 }

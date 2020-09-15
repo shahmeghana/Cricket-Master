@@ -13,6 +13,7 @@ import com.nouhoun.springboot.jwt.integration.domain.Bet;
 import com.nouhoun.springboot.jwt.integration.domain.Bets;
 import com.nouhoun.springboot.jwt.integration.domain.Match;
 import com.nouhoun.springboot.jwt.integration.domain.TimeTable;
+import com.nouhoun.springboot.jwt.integration.domain.User;
 import com.nouhoun.springboot.jwt.integration.domain.UserDetails;
 import com.nouhoun.springboot.jwt.integration.repository.BetsRepository;
 import com.nouhoun.springboot.jwt.integration.repository.SystemPropertyRepository;
@@ -100,7 +101,8 @@ public class BetServiceImpl implements BetService {
 			UserDetails user = genericService.findByUid(uid);
 			if(user != null)
 			{
-				bets.addAll(convertsBets(user));
+				User usr = genericService.getUser(user);
+				bets.addAll(convertsBets(usr));
 			}
 			else
 			{
@@ -120,7 +122,7 @@ public class BetServiceImpl implements BetService {
 	}
 
 	@Override
-	public List<Bet> convertsBets(UserDetails user) {
+	public List<Bet> convertsBets(User user) {
 		List<Bet> bets = new ArrayList<Bet>();
 		List<Bets> allBets = betsRepository.findAllByUserId(user.getId());
 

@@ -3,7 +3,7 @@ package com.nouhoun.springboot.jwt.integration.service;
 import java.util.List;
 
 import com.nouhoun.springboot.jwt.integration.domain.Bet;
-import com.nouhoun.springboot.jwt.integration.domain.UserDetails;
+import com.nouhoun.springboot.jwt.integration.domain.User;
 import com.nouhoun.springboot.jwt.integration.util.Output;
 
 /**
@@ -16,5 +16,5 @@ public interface BetService {
 	
 	Output getBets(String uid);
 	
-	List<Bet> convertsBets(UserDetails user);
+	List<Bet> convertsBets(User user);
 }
