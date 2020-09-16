@@ -34,7 +34,7 @@ public class FriendServiceImpl implements FriendService {
 			if(user != null)
 			{
 				Friends friend = friendsRepository.findByUserIdAndFriendId(user.getId(), id);
-				if(friend.getId() != null)
+				if(friend != null && friend.getId() != null)
 				{
 					friend.setStatus(1);
 				}

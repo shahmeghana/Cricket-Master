@@ -12,6 +12,6 @@ import com.nouhoun.springboot.jwt.integration.domain.Friends;
 public interface FriendsRepository extends CrudRepository<Friends, Long> {
     Friends findByUserIdAndFriendId(Long userId, Long friendId);
     
-    List<Friends> findByUserId(Long userId);
+    List<Friends> findByUserIdAndStatus(Long userId, int status);
 }
 

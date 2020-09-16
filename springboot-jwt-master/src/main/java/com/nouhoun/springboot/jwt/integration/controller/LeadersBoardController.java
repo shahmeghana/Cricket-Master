@@ -21,7 +21,7 @@ public class LeadersBoardController {
    @Autowired
    LeaderBoardService service;
    
-   @GetMapping("/getGlobal")
+   @GetMapping("/global")
    public ResponseEntity<Output> getLeaderBoard(){
 	   Output out = service.getLeaderBoard();
 	   if(out.getResponseCode() == ResponseCode.ERROR.getCode())
@@ -31,7 +31,7 @@ public class LeadersBoardController {
 	   return ResponseEntity.ok(out);
    }
    
-   @GetMapping("/getFriends")
+   @GetMapping("/friends")
    public ResponseEntity<Output> getFriendsLeaderBoard(@RequestParam String uid){
 	   Output out = service.getFriendsLeaderBoard(uid);
 	   if(out.getResponseCode() == ResponseCode.ERROR.getCode())

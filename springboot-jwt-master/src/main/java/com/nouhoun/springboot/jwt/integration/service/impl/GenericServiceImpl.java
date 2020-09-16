@@ -104,14 +104,19 @@ public class GenericServiceImpl implements GenericService {
         			for(UserDetails details : userDetails)
         			{
         				User friendUser = getUser(details);
+        				Friends friend = friendsRepository.findByUserIdAndFriendId(user.getId(), details.getId());
+        				if(friend != null && friend.getStatus() != 0)
+        				{
+        					friendUser.setFriend(true);
+        				}
+        				
     					usersList.add(friendUser);
         			}
     			}
     			List<User> users = new ArrayList<User>();
     			users.addAll(findFriends(uid));
     			
-    			usersList.removeAll(users);
-    			
+				usersList.removeAll(users);
     		}
     		out.setResults("users", usersList);
 		}
@@ -130,16 +135,12 @@ public class GenericServiceImpl implements GenericService {
 	public List<User> findFriends(String uid) throws Exception {
 		UserDetails user = findByUid(uid);
 		List<User> users = new ArrayList<User>();
-
+		int status = 1;
 		if(user != null)
 		{ 
-			List<Friends> friends = friendsRepository.findByUserId(user.getId());
+			List<Friends> friends = friendsRepository.findByUserIdAndStatus(user.getId(),status);
 			for(Friends friend : friends)
 			{
-				if(friend.getStatus() == 0)
-				{
-					continue;
-				}
 				Optional<UserDetails> frnd = userRepository.findById(friend.getFriendId());
 				if(frnd.isPresent())
 				{

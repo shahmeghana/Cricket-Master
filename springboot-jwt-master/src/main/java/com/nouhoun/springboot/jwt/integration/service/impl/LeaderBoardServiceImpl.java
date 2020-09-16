@@ -78,6 +78,10 @@ public class LeaderBoardServiceImpl implements LeaderBoardService {
 		Long score = 0L;
 		for(Bet bet : bets)
 		{
+			if(bet.getWin() == null)
+			{
+				continue;
+			}
 			if(bet.getWin() == true)
 			{
 				score++;
