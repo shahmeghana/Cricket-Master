@@ -2,6 +2,7 @@ package com.nouhoun.springboot.jwt.integration.service;
 
 import java.util.List;
 
+import com.nouhoun.springboot.jwt.integration.domain.Score;
 import com.nouhoun.springboot.jwt.integration.domain.User;
 import com.nouhoun.springboot.jwt.integration.domain.UserDetails;
 import com.nouhoun.springboot.jwt.integration.util.Output;
@@ -22,5 +23,7 @@ public interface GenericService {
 	List<User> findFriends(String uid) throws Exception;
 	
 	User getUser(UserDetails user);
+	
+	Score getScore(User user);
     
 }

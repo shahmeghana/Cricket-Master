@@ -8,13 +8,11 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.nouhoun.springboot.jwt.integration.domain.Bet;
 import com.nouhoun.springboot.jwt.integration.domain.Score;
 import com.nouhoun.springboot.jwt.integration.domain.User;
 import com.nouhoun.springboot.jwt.integration.domain.UserDetails;
 import com.nouhoun.springboot.jwt.integration.repository.SystemPropertyRepository;
 import com.nouhoun.springboot.jwt.integration.repository.UserRepository;
-import com.nouhoun.springboot.jwt.integration.service.BetService;
 import com.nouhoun.springboot.jwt.integration.service.GenericService;
 import com.nouhoun.springboot.jwt.integration.service.LeaderBoardService;
 import com.nouhoun.springboot.jwt.integration.util.Output;
@@ -30,8 +28,6 @@ public class LeaderBoardServiceImpl implements LeaderBoardService {
 	@Autowired
     private SystemPropertyRepository systemPropertiesRepository;
 	@Autowired
-	private BetService betService;
-	@Autowired
 	private GenericService service;
 	
 	@Override
@@ -46,7 +42,7 @@ public class LeaderBoardServiceImpl implements LeaderBoardService {
     		for(UserDetails user : userDetails)
     		{
     			User usr = service.getUser(user);
-    			userScores.add(getScore(usr));
+    			userScores.add(service.getScore(usr));
     		}
     		Collections.sort(userScores, scoreComparator());
     		
@@ -72,32 +68,6 @@ public class LeaderBoardServiceImpl implements LeaderBoardService {
     	out.setMessage("LeaderBoard fetched successfully");
         return out;
     }
-
-	private Score getScore(User user) {
-		List<Bet> bets = betService.convertsBets(user);
-		Long score = 0L;
-		for(Bet bet : bets)
-		{
-			if(bet.getWin() == null)
-			{
-				continue;
-			}
-			if(bet.getWin() == true)
-			{
-				score++;
-			}
-			else if(bet.getWin() == false)
-			{
-				score--;
-			}
-		}
-		Score newUser = new Score();
-		newUser.setDisplayName(user.getDisplayName());
-		newUser.setId(user.getId());
-		newUser.setPhotoURL(user.getPhotoURL());
-		newUser.setScore(score);
-		return newUser;
-	}
 
 	private Comparator<Score> scoreComparator() {
 		return new Comparator<Score>() {
@@ -125,7 +95,7 @@ public class LeaderBoardServiceImpl implements LeaderBoardService {
     		List<User> userDetails = service.findFriends(uid);
     		for(User user : userDetails)
     		{
-    			userScores.add(getScore(user));
+    			userScores.add(service.getScore(user));
     		}
     		Collections.sort(userScores, scoreComparator());
     		

@@ -7,11 +7,15 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.nouhoun.springboot.jwt.integration.domain.Bet;
 import com.nouhoun.springboot.jwt.integration.domain.Friends;
+import com.nouhoun.springboot.jwt.integration.domain.Profile;
+import com.nouhoun.springboot.jwt.integration.domain.Score;
 import com.nouhoun.springboot.jwt.integration.domain.User;
 import com.nouhoun.springboot.jwt.integration.domain.UserDetails;
 import com.nouhoun.springboot.jwt.integration.repository.FriendsRepository;
 import com.nouhoun.springboot.jwt.integration.repository.UserRepository;
+import com.nouhoun.springboot.jwt.integration.service.BetService;
 import com.nouhoun.springboot.jwt.integration.service.GenericService;
 import com.nouhoun.springboot.jwt.integration.util.Output;
 import com.nouhoun.springboot.jwt.integration.util.Output.ResponseCode;
@@ -24,7 +28,9 @@ public class GenericServiceImpl implements GenericService {
     private UserRepository userRepository;
 	@Autowired
 	private FriendsRepository friendsRepository;
-
+	@Autowired
+	private BetService betService;
+	
     @Override
     public Output findAllUsers() {
     	Output out = new Output();
@@ -66,6 +72,19 @@ public class GenericServiceImpl implements GenericService {
 			{
 				userRepository.save(userDetails);
 			}
+			
+			UserDetails savedUser = userRepository.findByUid(userDetails.getUid());
+			User suser = getUser(savedUser);
+			List<Friends> followers = friendsRepository.findByUserId(savedUser.getId());
+			List<Friends> following = friendsRepository.findByFriendId(savedUser.getId());
+			Score score  = getScore(suser);
+			
+			Profile userProfile = new Profile();
+			userProfile.setFollowers(followers.size());
+			userProfile.setFollowing(following.size());
+			userProfile.setScore(score.getScore());
+			
+			out.setResults("profile",userProfile);
 		}
 		catch(Exception e) 
 		{ 
@@ -157,6 +176,33 @@ public class GenericServiceImpl implements GenericService {
 		}
 		
 		return users;
+	}
+	
+	@Override
+	public Score getScore(User user) {
+		List<Bet> bets = betService.convertsBets(user);
+		Long score = 0L;
+		for(Bet bet : bets)
+		{
+			if(bet.getWin() == null)
+			{
+				continue;
+			}
+			if(bet.getWin() == true)
+			{
+				score++;
+			}
+			else if(bet.getWin() == false)
+			{
+				score--;
+			}
+		}
+		Score newUser = new Score();
+		newUser.setDisplayName(user.getDisplayName());
+		newUser.setId(user.getId());
+		newUser.setPhotoURL(user.getPhotoURL());
+		newUser.setScore(score);
+		return newUser;
 	}
 
 	@Override
