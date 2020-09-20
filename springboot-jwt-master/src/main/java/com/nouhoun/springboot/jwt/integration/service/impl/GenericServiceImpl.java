@@ -75,15 +75,14 @@ public class GenericServiceImpl implements GenericService {
 			
 			UserDetails savedUser = userRepository.findByUid(userDetails.getUid());
 			User suser = getUser(savedUser);
-			List<Friends> followers = friendsRepository.findByUserId(savedUser.getId());
-			List<Friends> following = friendsRepository.findByFriendId(savedUser.getId());
+			List<Friends> followers = friendsRepository.findByFriendIdAndStatus(savedUser.getId(), 1);
+			List<Friends> following = friendsRepository.findByUserIdAndStatus(savedUser.getId(), 1);
 			Score score  = getScore(suser);
 			
 			Profile userProfile = new Profile();
 			userProfile.setFollowers(followers.size());
 			userProfile.setFollowing(following.size());
 			userProfile.setScore(score.getScore());
-			
 			out.setResults("profile",userProfile);
 		}
 		catch(Exception e) 
