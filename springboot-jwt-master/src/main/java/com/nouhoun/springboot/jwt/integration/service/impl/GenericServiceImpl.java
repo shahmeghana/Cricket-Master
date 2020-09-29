@@ -1,24 +1,18 @@
 package com.nouhoun.springboot.jwt.integration.service.impl;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import com.nouhoun.springboot.jwt.integration.domain.Bet;
-import com.nouhoun.springboot.jwt.integration.domain.Friends;
-import com.nouhoun.springboot.jwt.integration.domain.Profile;
-import com.nouhoun.springboot.jwt.integration.domain.Score;
-import com.nouhoun.springboot.jwt.integration.domain.User;
-import com.nouhoun.springboot.jwt.integration.domain.UserDetails;
+import com.nouhoun.springboot.jwt.integration.domain.*;
 import com.nouhoun.springboot.jwt.integration.repository.FriendsRepository;
 import com.nouhoun.springboot.jwt.integration.repository.UserRepository;
 import com.nouhoun.springboot.jwt.integration.service.BetService;
 import com.nouhoun.springboot.jwt.integration.service.GenericService;
 import com.nouhoun.springboot.jwt.integration.util.Output;
 import com.nouhoun.springboot.jwt.integration.util.Output.ResponseCode;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 /**
  * Created by mshah on 03/13/20.
  */
@@ -30,7 +24,7 @@ public class GenericServiceImpl implements GenericService {
 	private FriendsRepository friendsRepository;
 	@Autowired
 	private BetService betService;
-	
+
     @Override
     public Output findAllUsers() {
     	Output out = new Output();
@@ -41,10 +35,10 @@ public class GenericServiceImpl implements GenericService {
 		}
     	catch(Exception e)
     	{
-			out.setMessage(e.getMessage()); 
+            out.setMessage(e.getMessage());
 			return out;
     	}
-    	
+
     	out.setResponseCode(ResponseCode.SUCCESS.getCode());
     	out.setMessage("Fetched all users successfully");
         return out;
@@ -72,27 +66,25 @@ public class GenericServiceImpl implements GenericService {
 			{
 				userRepository.save(userDetails);
 			}
-			
+
 			UserDetails savedUser = userRepository.findByUid(userDetails.getUid());
 			User suser = getUser(savedUser);
 			List<Friends> followers = friendsRepository.findByFriendIdAndStatus(savedUser.getId(), 1);
 			List<Friends> following = friendsRepository.findByUserIdAndStatus(savedUser.getId(), 1);
 			Score score  = getScore(suser);
-			
+
 			Profile userProfile = new Profile();
 			userProfile.setFollowers(followers.size());
 			userProfile.setFollowing(following.size());
 			userProfile.setScore(score.getScore());
 			out.setResults("profile",userProfile);
-		}
-		catch(Exception e) 
-		{ 
-			out.setMessage(e.getMessage()); 
+        } catch (Exception e) {
+            out.setMessage(e.getMessage());
 			return out;
 		}
-		
-		 out.setResponseCode(ResponseCode.SUCCESS.getCode());
-		 out.setMessage("Profile created successfully..."); 
+
+        out.setResponseCode(ResponseCode.SUCCESS.getCode());
+        out.setMessage("Profile created successfully...");
 		 return out;
 	}
 
@@ -118,8 +110,8 @@ public class GenericServiceImpl implements GenericService {
     			{
     				UserDetails user = findByUid(uid);
         			userDetails.remove(user);
-        			
-        			for(UserDetails details : userDetails)
+
+                    for (UserDetails details : userDetails)
         			{
         				User friendUser = getUser(details);
         				Friends friend = friendsRepository.findByUserIdAndFriendId(user.getId(), details.getId());
@@ -127,57 +119,55 @@ public class GenericServiceImpl implements GenericService {
         				{
         					friendUser.setFriend(true);
         				}
-        				
-    					usersList.add(friendUser);
+
+                        usersList.add(friendUser);
         			}
     			}
     			List<User> users = new ArrayList<User>();
     			users.addAll(findFriends(uid));
-    			
-				usersList.removeAll(users);
+
+                usersList.removeAll(users);
     		}
     		out.setResults("users", usersList);
 		}
     	catch(Exception e)
     	{
-			out.setMessage(e.getMessage()); 
+            out.setMessage(e.getMessage());
 			return out;
     	}
-    	
-    	out.setResponseCode(ResponseCode.SUCCESS.getCode());
+
+        out.setResponseCode(ResponseCode.SUCCESS.getCode());
     	out.setMessage("Found users successfully");
         return out;
     }
-	
-	@Override
+
+    @Override
 	public List<User> findFriends(String uid) throws Exception {
 		UserDetails user = findByUid(uid);
-		List<User> users = new ArrayList<User>();
-		int status = 1;
-		if(user != null)
-		{ 
-			List<Friends> friends = friendsRepository.findByUserIdAndStatus(user.getId(),status);
-			for(Friends friend : friends)
-			{
-				Optional<UserDetails> frnd = userRepository.findById(friend.getFriendId());
-				if(frnd.isPresent())
-				{
-					User friendUser = getUser(frnd.get());
-					friendUser.setFriend(true);
+        if (user == null) {
+            throw new Exception("User not found!");
+        }
 
-					users.add(friendUser);
-				}
-			}
-		}
-		else
-		{
-			throw new Exception("User not found!");
-		}
-		
+        // There was nothing wrong with initial code,
+        // This was it just reduces the number of brackets
+
+        List<User> users = new ArrayList<User>();
+        int status = 1;
+        List<Friends> friends = friendsRepository.findByUserIdAndStatus(user.getId(), status);
+        for (Friends friend : friends) {
+            Optional<UserDetails> frnd = userRepository.findById(friend.getFriendId());
+            if (frnd.isPresent()) {
+                User friendUser = getUser(frnd.get());
+                friendUser.setFriend(true);
+
+                users.add(friendUser);
+            }
+        }
+
 		return users;
 	}
-	
-	@Override
+
+    @Override
 	public Score getScore(User user) {
 		List<Bet> bets = betService.convertsBets(user);
 		Long score = 0L;

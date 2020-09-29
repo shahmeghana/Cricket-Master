@@ -1,13 +1,5 @@
 package com.nouhoun.springboot.jwt.integration.service.impl;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
-
 import com.nouhoun.springboot.jwt.integration.domain.Match;
 import com.nouhoun.springboot.jwt.integration.domain.TeamList;
 import com.nouhoun.springboot.jwt.integration.domain.TimeTable;
@@ -19,6 +11,15 @@ import com.nouhoun.springboot.jwt.integration.service.MatchService;
 import com.nouhoun.springboot.jwt.integration.util.MatchAdapter;
 import com.nouhoun.springboot.jwt.integration.util.Output;
 import com.nouhoun.springboot.jwt.integration.util.Output.ResponseCode;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+
+import javax.annotation.PostConstruct;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Optional;
 
 /**
  * Created by mshah on 03/08/20.
@@ -35,40 +36,86 @@ public class MatchServiceImpl implements MatchService {
 	private String tournamentName;
 	@Value("${cricket.punter.default.tournamentDescription}")
 	private String tournamentDescription;
-	
+
+    @Value("${cricket.punter.default.tournamentId}")
+    private Long tournamentId;
+
+    List<TeamList> allTeamDetails;
+    Tournament tournament;
+
+    // This method will be executed by Spring as soon as MatchService Bean is created
+    // That means allTeamDetails and tournament objects get initialized even before any request is received
+    // So we can easily share them across the class
+    // This reduces the need to fetch same data again and again from database
+
+    @PostConstruct
+    void fillCache() {
+        allTeamDetails = teamListRepository.findAll();
+        tournament = getTournament(tournamentId);
+    }
+
+    Tournament getTournament(Long tournamentId) {
+        Optional<Tournament> tnmt = tournamentReposiory.findById(tournamentId);
+
+        return tnmt.orElseGet(() -> {
+            Tournament tournament2 = new Tournament();
+            tournament2.setTournamentName(tournamentName);
+            tournament2.setDescription(tournamentDescription);
+            return tournament2;
+        });
+    }
+
     @Override
     public Output getTimeTable(){
     	final List<Match> matches = new ArrayList<Match>();
-    	List<TimeTable> timeTables = new ArrayList<TimeTable>();
 		Output out =  new Output();
 
-    	timeTables = timeTableRepository.findAll();
+        // Don't want to fetch teamDetails and tournament details again and again
+        // This change reduced api response time from 42s to 3s
+        // Since neither of this data is going to change throughout the tournament,
+        // we can use @PostConstruct annotation and cache all this data as soon as application boots up
+
+        // Not fetching matches that are already complete so that UI need not provide a filter for today's matches
+        List<TimeTable> timeTables = timeTableRepository.findByEventDateAfter(new Date());
     	for(TimeTable timeTable : timeTables)
     	{
-    		Match match = getMatch(timeTable);
+            Optional<TeamList> team1 = allTeamDetails.stream()
+                .filter(teamDetails -> teamDetails.getId() == timeTable.getTeam1Id())
+                .findFirst();
+
+            Optional<TeamList> team2 = allTeamDetails.stream()
+                .filter(teamDetails -> teamDetails.getId() == timeTable.getTeam2Id())
+                .findFirst();
+
+            if (!team1.isPresent() || !team2.isPresent()) {
+                continue;
+            }
+
+            final MatchAdapter convertor = new MatchAdapter(timeTable);
+            final Match match = convertor.convertToMatch(team1.get(), team2.get(), tournament);
+            match.setComment(timeTable.getComment());
     		matches.add(match);
     	}
-    	
+
     	out.setResponseCode(ResponseCode.SUCCESS.getCode());
     	out.setMessage("All matches Fetched...");
     	out.setResults("matches", matches);;
     	return out;
     }
 
+
     @Override
 	public Match getMatch(TimeTable timeTable) {
-		TeamList team1 = teamListRepository.
-				findByIdAndTournamentId(timeTable.getTeam1Id(), timeTable.getTournamentId());
-		TeamList team2 = teamListRepository.
-				findByIdAndTournamentId(timeTable.getTeam2Id(), timeTable.getTournamentId());
-		
-		Optional<Tournament> tournament = tournamentReposiory.findById(timeTable.getTournamentId());
-		Tournament tournament1 = tournament.orElseGet(()->{Tournament tournament2 = new Tournament();
-									tournament2.setTournamentName(tournamentName);
-									tournament2.setDescription(tournamentDescription);
-									return tournament2;});
+        Optional<TeamList> team1 = allTeamDetails.stream()
+            .filter(teamDetails -> teamDetails.getId() == timeTable.getTeam1Id())
+            .findFirst();
+
+        Optional<TeamList> team2 = allTeamDetails.stream()
+            .filter(teamDetails -> teamDetails.getId() == timeTable.getTeam2Id())
+            .findFirst();
+
 		final MatchAdapter convertor = new MatchAdapter(timeTable);
-		final Match match = convertor.convertToMatch(team1,team2,tournament1);
+        final Match match = convertor.convertToMatch(team1.get(), team2.get(), tournament);
 		match.setComment(timeTable.getComment());
 		return match;
 	}
