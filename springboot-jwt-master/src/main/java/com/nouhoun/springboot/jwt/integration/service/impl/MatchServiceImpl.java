@@ -17,7 +17,6 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -75,8 +74,7 @@ public class MatchServiceImpl implements MatchService {
         // Since neither of this data is going to change throughout the tournament,
         // we can use @PostConstruct annotation and cache all this data as soon as application boots up
 
-        // Not fetching matches that are already complete so that UI need not provide a filter for today's matches
-        List<TimeTable> timeTables = timeTableRepository.findByEventDateAfter(new Date());
+        List<TimeTable> timeTables = timeTableRepository.findAll();
     	for(TimeTable timeTable : timeTables)
     	{
             Optional<TeamList> team1 = allTeamDetails.stream()
